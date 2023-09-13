@@ -1,19 +1,26 @@
 package ifpr.pgua.eic.colecaomusicas.model.entities;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Playlist {
     private int id;
     private String nome;
-    List<Musica> musicas = new ArrayList<>();
+    ArrayList<Musica> musica = new ArrayList<>();
+    
     
 
-    public Playlist(String nome, List<Musica> musicas) {
+    public Playlist(String nome, ArrayList<Musica> musica) {
         this.nome = nome;
-        this.musicas = musicas;
-     
+        this.musica = musica;
     }
+
+
+    public Playlist(int id, String nome, ArrayList<Musica> musica) {
+        this.id = id;
+        this.nome = nome;
+        this.musica = musica;
+    }
+
 
     public int getId() {
         return id;
@@ -35,13 +42,13 @@ public class Playlist {
     }
 
 
-    public List<Musica> getMusica() {
-        return musicas;
+    public ArrayList<Musica> getMusica() {
+        return musica;
     }
 
 
     public void setMusica(ArrayList<Musica> musica) {
-        this.musicas = musica;
+        this.musica = musica;
     }
 
 }

@@ -14,8 +14,8 @@ import ifpr.pgua.eic.colecaomusicas.model.entities.Playlist;
 
 public class JDBCPlaylistDAO implements PlaylistDAO{
 
-    private static final String INSERTSQLPlaylist = "INSERT INTO playlist(nome) VALUES (?)";
-    private static final String INSERTSQLplaylistmusicas = "INSERT INTO playlistmusicas(id_playlist , id_musica ) VALUES (?,?)";
+    private static final String INSERTSQLplaylist = "INSERT INTO playlist(nome) VALUES (?)";
+    private static final String INSERTSQLplaylistmusicas = "INSERT INTO playlistmusicas(id_playlist, id_musicas ) VALUES (?,?)";
     private static final String SELECTSQL = "SELECT * FROM playlistmusicas";
 
     private FabricaConexoes fabrica;
@@ -28,7 +28,7 @@ public class JDBCPlaylistDAO implements PlaylistDAO{
     public Resultado criar(Playlist playlist) {
         try (Connection con = fabrica.getConnection()) {
 
-            PreparedStatement pstm = con.prepareStatement(INSERTSQLPlaylist, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pstm = con.prepareStatement(INSERTSQLplaylist, Statement.RETURN_GENERATED_KEYS);
             
             pstm.setString(1, playlist.getNome());
             
@@ -42,12 +42,12 @@ public class JDBCPlaylistDAO implements PlaylistDAO{
 
                 playlist.setId(id);
                 
-                PreparedStatement pstplaylistmusicas = con.prepareStatement(INSERTSQLplaylistmusicas, Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement pstmplaylistmusicas = con.prepareStatement(INSERTSQLplaylistmusicas, Statement.RETURN_GENERATED_KEYS);
                 for(Musica m: playlist.getMusica()){
-                    pstplaylistmusicas.setInt(1, playlist.getId());
-                    pstplaylistmusicas.setInt(2, m.getId());
+                    pstmplaylistmusicas.setInt(1, playlist.getId());
+                    pstmplaylistmusicas.setInt(2, m.getId());
 
-                    pstplaylistmusicas.executeUpdate();
+                    pstmplaylistmusicas.executeUpdate();
                 }
                 return Resultado.sucesso("Playlist cadastrada", playlist);
             }
@@ -71,11 +71,12 @@ public class JDBCPlaylistDAO implements PlaylistDAO{
 
         ArrayList<Playlist> lista = new ArrayList<>();
         while(rs.next()){
+            int id = rs.getInt("id");
             String nome = rs.getString("nome");
-            ArrayList<Musica> musicas = new ArrayList<>();
+            ArrayList<Musica> musica = new ArrayList<>();
 
             //iremos buscar artista e genero através do repositório
-            Playlist playlist = new Playlist(nome, musicas);
+            Playlist playlist = new Playlist(id, nome, musica);
 
             lista.add(playlist);
         }
